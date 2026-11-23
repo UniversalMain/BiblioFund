@@ -3998,7 +3998,7 @@ window.addEventListener('DOMContentLoaded',syncRegistryPresentation);
   <div id="cloud-login" hidden>
    <label for="cloud-email">Email</label><input id="cloud-email" type="email" autocomplete="username" placeholder="librarian@school.kz">
    <label for="cloud-password">Құпиясөз</label><input id="cloud-password" type="password" autocomplete="current-password" placeholder="Құпиясөз">
-   <div class="actions"><button id="cloud-signin" type="button">Кіру</button><button id="cloud-change-config" type="button" class="secondary">Баптаулар</button></div>
+   <div class="actions"><button id="cloud-signin" type="button">Кіру</button><button id="cloud-change-config" type="button" class="secondary" hidden>Баптаулар</button></div>
   </div>
   <div id="cloud-connected">
    <p><strong id="cloud-person"></strong></p>
@@ -4188,7 +4188,7 @@ body.biblio-reader #biblio-reader-switch{display:none!important}
   const button=el('cloud-toggle');button.dataset.state=state;
   const labels={online:'Сақталды',connecting:'Қосылуда…',login:'Кіру',offline:'Қосылу',error:'Қате'};
   el('cloud-toggle-text').textContent=labels[state]||labels.offline;
-  const detail=state==='online'?'Бұлттық база қосылған':state==='login'?'Кітапханашы ретінде кіру':state==='connecting'?'Бұлттық базаға қосылуда':state==='error'?'Қосылым қатесі. Баптауларды ашыңыз':'Бұлттық базаға қосылу';
+  const detail=state==='online'?'Бұлттық база қосылған':state==='login'?'Каталог қолжетімді · кіру міндетті емес':state==='connecting'?'Бұлттық базаға қосылуда':state==='error'?'Қосылым қатесі. Баптауларды ашыңыз':'Бұлттық базаға қосылу';
   button.setAttribute('aria-label',detail);button.title=detail;
  }
  function message(text,kind='normal'){
@@ -4213,9 +4213,17 @@ body.biblio-reader #biblio-reader-switch{display:none!important}
   if(online)chip('online');else if(client&&!initializing)chip('login');else if(!client)chip('offline');
  }
  function fromConfig(){
-  try{const cfg=JSON.parse(localStorage.getItem(CONFIG)||'null');if(cfg&&cfg.url&&cfg.key){el('cloud-url').value=cfg.url;el('cloud-key').value=cfg.key;return true;}}catch(_){}
-  el('cloud-url').value=DEFAULT_URL;
-  el('cloud-key').value=DEFAULT_KEY;
+  // Published school site has exactly one official Supabase project.
+  // Old browser-local settings MUST NOT silently override the official project.
+  const official={url:DEFAULT_URL,key:DEFAULT_KEY};
+  try {
+   const cached=JSON.parse(localStorage.getItem(CONFIG)||'null');
+   if(!cached || cached.url!==official.url || cached.key!==official.key){
+    localStorage.setItem(CONFIG,JSON.stringify(official));
+   }
+  }catch(_){try{localStorage.setItem(CONFIG,JSON.stringify(official));}catch(__){}}
+  el('cloud-url').value=official.url;
+  el('cloud-key').value=official.key;
   return true;
  }
  async function configure(){
@@ -4228,12 +4236,20 @@ body.biblio-reader #biblio-reader-switch{display:none!important}
   try{
    chip('connecting');booting=true;
    if(client)await disconnect();
-   client=window.supabase.createClient(url,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'bibliofund-literature-auth'}});
+   client=window.supabase.createClient(url,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:'bibliofund-school19-published-auth-v2'}});
    localStorage.setItem(CONFIG,JSON.stringify({url,key}));
    controls();message('Жоба бапталды. Бір рет кіріңіз, келесі ашылғанда кіру автоматты түрде қалпына келеді.');
    const {data:{session},error}=await client.auth.getSession();if(error)throw error;
-   if(session)await connect();else {window.ReaderUI?.enter(client,'guest',null);chip('login');if(!el('cloud-panel').classList.contains('open'))message('Кіру үшін жоғарғы ☁ батырмасын басыңыз.');}
-  }catch(e){message('Қосылу қатесі: '+e.message,'error');}
+   if(session)await connect();else {window.ReaderUI?.enter(client,'guest',null);chip('login');if(!el('cloud-panel').classList.contains('open'))message('Каталог ашық. Брондау үшін «Кіру / Тіркелу» батырмасын басыңыз.');}
+  }catch(e){
+   const detail=String(e?.message||e);
+   if(client && /refresh token|invalid.*jwt|invalid session/i.test(detail)){
+    try{await client.auth.signOut({scope:'local'});}catch(_){}
+   }
+   // A login/session failure must not block the public book catalogue.
+   if(client)await window.ReaderUI?.enter(client,'guest',null);
+   message('Бұлтқа қосылу қатесі: '+detail+'\nКаталогты көру үшін кіру міндетті емес.','error');
+  }
   finally{booting=false;controls();if(el('cloud-message').dataset.kind==='error')chip('error');}
  }
  async function signIn(){
@@ -4244,15 +4260,21 @@ body.biblio-reader #biblio-reader-switch{display:none!important}
    const {error}=await client.auth.signInWithPassword({email:el('cloud-email').value.trim(),password:el('cloud-password').value});
    if(error)throw error;
    await connect();
-  }catch(e){message('Кіру қатесі: '+e.message,'error');}
+  }catch(e){
+   const hint=/invalid login credentials|invalid_credentials/i.test(e.message)
+    ? 'Email немесе құпиясөз сәйкес келмейді. Supabase URL/кілтін қайта енгізудің қажеті жоқ.'
+    : 'Кіру қатесі: '+e.message;
+   message(hint,'error');
+  }
   finally{el('cloud-password').value='';el('cloud-signin').disabled=false;}
  }
  async function connect(){
   if(initializing||!client)return;initializing=true;chip('connecting');
   try{
    const {data:{user},error:userError}=await client.auth.getUser();if(userError||!user)throw new Error('Алдымен жүйеге кіріңіз.');
-   const {data:profile,error:pError}=await client.from('library_roles').select('role').eq('user_id',user.id).eq('school_id',SCHOOL).single();
-   if(pError||!profile){online=false;role='reader';window.ReaderUI?.enter(client,'reader',user);controls();closePanel();return;}
+   const {data:profile,error:pError}=await client.from('library_roles').select('role').eq('user_id',user.id).eq('school_id',SCHOOL).maybeSingle();
+   if(pError)throw new Error('Рөлдерді тексеру қатесі: '+pError.message);
+   if(!profile){online=false;role='reader';await window.ReaderUI?.enter(client,'reader',user);controls();closePanel();return;}
    const nextRole=profile.role;
    if(nextRole!=='librarian'&&nextRole!=='admin'){window.ReaderUI?.enter(client,'reader',user);closePanel();return;}
    const state=await fetchCloudState();
@@ -4277,7 +4299,13 @@ body.biblio-reader #biblio-reader-switch{display:none!important}
    el('cloud-person').textContent=user.email+' · '+(role==='librarian'?'Кітапханашы':'Әкімшілік');
    showRevision();controls();chip('online');message('Ортақ база қосылды. Синхрондау автоматты түрде жұмыс істейді.');
    beginSync();window.ReaderUI?.enter(client,'librarian',user,true);closePanel();
-  }catch(e){online=false;role=null;controls();message('Қосылу қатесі: '+e.message,'error');}
+  }catch(e){
+   online=false;role=null;
+   controls();
+   // Readers should still have a working catalog even when an old session fails.
+   if(client){await window.ReaderUI?.enter(client,'guest',null);}
+   message('Кіруді қалпына келтіру мүмкін болмады: '+e.message+'\nКітаптар каталогы қонақ ретінде ашылды. Брондау үшін «Кіру / Тіркелу» таңдаңыз.','error');
+  }
   finally{initializing=false;}
  }
  async function fetchCloudState(){
@@ -4358,7 +4386,12 @@ body.biblio-reader #biblio-reader-switch{display:none!important}
  el('cloud-change-config').addEventListener('click',async()=>{await disconnect();client=null;controls();message('URL және publishable / anon key өзгертуге болады.');});
  // Reuse saved project configuration and Supabase refresh-token session.
  // Only public project configuration is embedded; no passwords or service-role keys.
- controls();chip('offline');if(fromConfig())configure();
+ controls();chip('offline');
+ // Startup MUST happen after the following reader script has created ReaderUI.
+ // Otherwise a fast cached Supabase session can leave the guest catalogue loading forever.
+ const bootPublished=()=>{if(fromConfig())configure();};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootPublished,{once:true});
+ else setTimeout(bootPublished,0);
 })();
 </script>
 
