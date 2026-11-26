@@ -2185,6 +2185,7 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
                         <option value="9">Тарихи әдебиет</option>
                         <option value="10">Балалар әдебиеті</option>
                         <option value="11">Классикалық әдебиет</option>
+                                <option value="12">Жанр көрсетілмеген</option>
                     </select>
                 </div>
 
@@ -2412,7 +2413,9 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
                     <span id="drawer-isbn-pill" class="px-2 py-0.5 rounded-md text-[11px] font-sans bg-slate-100 text-slate-600 border border-slate-200">ISBN: —</span>
                 </div>
                 <h3 id="drawer-subject" class="font-sans text-base font-bold text-slate-900 mt-2 leading-snug">Кітап атауы</h3>
-                <p id="drawer-author" class="text-xs text-slate-500 mt-0.5">Автор және баспа</p>
+                <p id="drawer-author" class="text-xs text-slate-500 mt-0.5">Автор</p>
+                <p id="drawer-publisher" class="text-xs text-slate-500 mt-0.5"></p>
+                <p id="drawer-source" class="text-xs text-slate-500 mt-0.5"></p>
             </div>
             <button type="button" onclick="closeBookDrawer()" class="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-white/10">✕</button>
         </div>
@@ -2580,6 +2583,7 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
                                 <option value="9">Тарихи әдебиет</option>
                                 <option value="10">Балалар әдебиеті</option>
                                 <option value="11">Классикалық әдебиет</option>
+                                <option value="12">Жанр көрсетілмеген</option>
                             </select>
                         </div>
                     </div>
@@ -2595,10 +2599,24 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
                         </div>
                     </div>
 
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label for="book-publisher" class="block font-medium text-slate-600 mb-1.5">Баспасы</label>
+                            <input type="text" id="book-publisher" placeholder="Көрсетілмеген" class="w-full h-9 px-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-blue-600/60">
+                        </div>
+                        <div>
+                            <label for="book-source-year" class="block font-medium text-slate-600 mb-1.5">Қорға түскен оқу жылы</label>
+                            <input type="text" id="book-source-year" placeholder="Мысалы: 2024/2025" class="w-full h-9 px-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-blue-600/60">
+                        </div>
+                        <div>
+                            <label for="book-unit-price" class="block font-medium text-slate-600 mb-1.5">Данасының бағасы (файлда)</label>
+                            <input type="number" id="book-unit-price" min="0" step="0.01" placeholder="—" class="w-full h-9 px-2.5 font-sans bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-blue-600/60">
+                        </div>
+                    </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label for="book-year" class="block font-medium text-slate-600 mb-1.5">Басылған жылы *</label>
-                            <input type="number" id="book-year" min="1800" max="2100" value="2026" required class="w-full h-9 px-2.5 font-sans bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-blue-600/60">
+                            <label for="book-year" class="block font-medium text-slate-600 mb-1.5">Басылған жылы (белгілі болса)</label>
+                            <input type="number" id="book-year" min="1800" max="2100" value="2026" class="w-full h-9 px-2.5 font-sans bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:border-blue-600/60">
                         </div>
                         <div>
                             <label for="book-demand" class="block font-medium text-slate-600 mb-1.5">Жоспарланған дана саны *</label>
@@ -2642,7 +2660,7 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
          ========================================================= -->
     <script>
         // Кітапханадағы көркем әдебиет қорының бос тізілімі
-        const LITERARY_CATEGORIES = Object.freeze({1:"Роман",2:"Хикаят",3:"Әңгімелер",4:"Поэзия",5:"Драматургия",6:"Ертегілер",7:"Фантастика",8:"Детектив",9:"Тарихи әдебиет",10:"Балалар әдебиеті",11:"Классикалық әдебиет"});
+        const LITERARY_CATEGORIES = Object.freeze({1:"Роман",2:"Хикаят",3:"Әңгімелер",4:"Поэзия",5:"Драматургия",6:"Ертегілер",7:"Фантастика",8:"Детектив",9:"Тарихи әдебиет",10:"Балалар әдебиеті",11:"Классикалық әдебиет",12:"Жанр көрсетілмеген"});
         function categoryName(code) { return LITERARY_CATEGORIES[code] || "Басқа"; }
         const inventoryData = { "2026/2027": [], "2025/2026": [] };
         let seasonalReports = [];
@@ -2789,7 +2807,7 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
             }
 
             let html = "";
-            for (let g = 1; g <= 11; g++) {
+            for (let g = 1; g <= 12; g++) {
                 const gradeBooks = books.filter(b => b.grade === g);
                 const usable = gradeBooks.reduce((sum, b) => sum + Math.max(0, b.total - b.writeoff), 0);
                 const demand = gradeBooks.reduce((sum, b) => sum + b.demand, 0);
@@ -2940,7 +2958,7 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
                                 </button>
                                 <div class="flex items-center gap-2 mt-0.5 text-[11px] font-sans text-slate-500">
                                     ${book.isbn ? `<span>ISBN: ${escapeHtml(book.isbn)}</span><span class="text-zinc-600">•</span>` : ""}
-                                    <span>Жоспар: ${book.demand} дана</span>
+                                    <span>Жоспар: ${book.demandEstimated ? 'көрсетілмеген' : book.demand + ' дана'}</span>
                                 </div>
                             </td>
                             <td class="px-3 py-3 text-center whitespace-nowrap">
@@ -2950,7 +2968,7 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
                             </td>
                             <td class="px-3 py-3 text-slate-600">
                                 <div>${escapeHtml(book.author)}</div>
-                                <div class="text-[11px] font-sans text-slate-400 mt-0.5">${book.year} ж.</div>
+                                <div class="text-[11px] font-sans text-slate-400 mt-0.5">${book.yearMissing ? '—' : book.year + ' ж.'}${book.publisher ? ' · '+escapeHtml(book.publisher) : ''}</div>
                             </td>
                             <td class="px-3 py-3 text-right font-sans font-semibold text-slate-900 tabular-nums whitespace-nowrap">
                                 ${book.total}
@@ -3212,6 +3230,8 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
             document.getElementById("drawer-isbn-pill").textContent = `ISBN: ${book.isbn}`;
             document.getElementById("drawer-subject").textContent = book.subject;
             document.getElementById("drawer-author").textContent = book.author;
+            document.getElementById("drawer-publisher").textContent = book.publisher ? `Баспасы: ${book.publisher}` : '';
+            document.getElementById("drawer-source").textContent = [book.sourceAcademicYear ? `Қорға түскен оқу жылы: ${book.sourceAcademicYear}` : '',book.unitPrice!=null ? `Данасының бағасы: ${book.unitPrice}` : '', book.sourceSheet ? `Дерек көзі: ${book.sourceSheet}, ${book.sourceRow||'—'}-жол` : ''].filter(Boolean).join(' · ');
             document.getElementById("drawer-total").textContent = book.total;
             document.getElementById("drawer-issued").textContent = book.issued;
             document.getElementById("drawer-stock").textContent = s.stock;
@@ -3282,7 +3302,10 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
             document.getElementById("edit-book-id").value = "";
             document.getElementById("modal-book-heading").textContent = "Жаңа әдеби кітап қосу";
             document.getElementById("book-subject").value = "";
-            document.getElementById("book-grade").value = "1";
+            document.getElementById("book-grade").value = "12";
+            document.getElementById("book-publisher").value = "";
+            document.getElementById("book-source-year").value = "";
+            document.getElementById("book-unit-price").value = "";
             document.getElementById("book-author").value = "";
             document.getElementById("book-isbn").value = "";
             document.getElementById("book-year").value = "2026";
@@ -3303,7 +3326,10 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
             document.getElementById("book-grade").value = String(book.grade);
             document.getElementById("book-author").value = book.author;
             document.getElementById("book-isbn").value = book.isbn;
-            document.getElementById("book-year").value = book.year;
+            document.getElementById("book-year").value = book.yearMissing ? "" : book.year;
+            document.getElementById("book-publisher").value = book.publisher || "";
+            document.getElementById("book-source-year").value = book.sourceAcademicYear || "";
+            document.getElementById("book-unit-price").value = book.unitPrice ?? "";
             document.getElementById("book-total").value = book.total;
             document.getElementById("book-issued").value = book.issued;
             document.getElementById("book-demand").value = book.demand;
@@ -3345,7 +3371,11 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
                 grade: parseInt(document.getElementById("book-grade").value, 10),
                 author: document.getElementById("book-author").value.trim(),
                 isbn: document.getElementById("book-isbn").value.trim(),
-                year: parseInt(document.getElementById("book-year").value, 10),
+                year: parseInt(document.getElementById("book-year").value, 10) || 1900,
+                yearMissing: !document.getElementById("book-year").value.trim(),
+                publisher: document.getElementById("book-publisher").value.trim(),
+                sourceAcademicYear: document.getElementById("book-source-year").value.trim(),
+                unitPrice: document.getElementById("book-unit-price").value === "" ? null : Number(document.getElementById("book-unit-price").value),
                 total, issued, demand, writeoff
             };
 
@@ -3385,10 +3415,11 @@ body.school-app{background:#f6f7f9;color:#243249}button,input,select{font-family
 
         function exportToCSV() {
             const rows = getFilteredSortedBooks();
-            const headers = ["Кітап атауы", "Әдебиет санаты", "Автор / Баспасы", "ISBN", "Басылым жылы", "Барлығы", "Берілгені", "Сөреде", "Жоспарланған дана", "Есептен шығару"];
+            const headers = ["Кітап атауы", "Жанр", "Автор", "Баспасы", "ISBN", "Басылым жылы", "Қорға түскен оқу жылы", "Барлығы", "Берілгені", "Сөреде", "Жоспарланған дана", "Есептен шығару", "Данасының бағасы", "Дерек көзі", "Excel жолы"];
+            const csvText = v => '"' + String(v ?? '').replace(/"/g,'""') + '"';
             const lines = rows.map(b => {
-                const s = calcBookStats(b);
-                return [`"${b.subject.replace(/"/g, '""')}"`,  `"${categoryName(b.grade)}"`, `"${b.author.replace(/"/g, '""')}"`, `"${b.isbn}"`, b.year, b.total, b.issued, s.stock, b.demand, b.writeoff].join(";");
+                const st = calcBookStats(b);
+                return [b.subject,categoryName(b.grade),b.author,b.publisher||'',b.isbn||'',b.yearMissing?'':b.year,b.sourceAcademicYear||'',b.total,b.issued,st.stock,b.demandEstimated?'':b.demand,b.writeoff,b.unitPrice??'',b.sourceSheet||'',b.sourceRow||''].map(csvText).join(';');
             });
 
             const csv = "\uFEFF" + [headers.join(";"), ...lines].join("\n");
@@ -3809,7 +3840,8 @@ window.addEventListener('DOMContentLoaded',syncRegistryPresentation);
    count+=list.length;if(count>50000)invalid('Көшірмеде кітаптар саны тым көп.');
    const ids=new Set();books[year]=list.map(b=>{
     if(!object(b))invalid();const id=integer(b.id,1,Number.MAX_SAFE_INTEGER);if(ids.has(id))invalid('Кітап идентификаторлары қайталанады.');ids.add(id);
-    const result={id,subject:string(b.subject,1000),grade:integer(b.grade,1,11),author:string(b.author,1000),isbn:string(b.isbn,100,false),year:integer(b.year,1800,2300),total:integer(b.total),issued:integer(b.issued),demand:integer(b.demand),writeoff:integer(b.writeoff)};
+    const price=v=>v==null?null:(typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=1e9?v:invalid('Баға дұрыс емес.'));
+    const result={id,subject:string(b.subject,1000),grade:integer(b.grade,1,12),author:string(b.author,1000),isbn:string(b.isbn,100,false),year:integer(b.year,1800,2300),total:integer(b.total),issued:integer(b.issued),demand:integer(b.demand),writeoff:integer(b.writeoff),publisher:string(b.publisher??'',1000,false),sourceAcademicYear:string(b.sourceAcademicYear??'',40,false),sourceSheet:string(b.sourceSheet??'',100,false),sourceRow:integer(b.sourceRow??0),unitPrice:price(b.unitPrice),sourceAmount:price(b.sourceAmount),yearMissing:b.yearMissing===true,authorMissing:b.authorMissing===true,demandEstimated:b.demandEstimated===true,importBatch:string(b.importBatch??'',120,false)};
     if(result.issued>result.total||result.writeoff>result.total)invalid('Берілген немесе есептен шығарылатын даналар жалпы саннан аспауға тиіс.');return result;
    });
   }
@@ -4457,7 +4489,7 @@ function render(){
  $('reader-books').innerHTML=shown.map(b=>{
   const total=Number(b.total)||0,available=Math.max(0,Number(b.available)||0),id=Number(b.id);
   return `<tr><td data-label="КІТАП АТАУЫ"><div class="r-book-title">${esc(b.subject)}</div>${b.isbn?`<div class="r-book-note">ISBN: ${esc(b.isbn)}</div>`:''}</td>
-  <td data-label="АВТОР">${esc(b.author||'—')}</td><td data-label="ЖАНР">${b.genre?`<span class="r-genre">${esc(b.genre)}</span>`:'—'}</td><td data-label="ЖЫЛ">${esc(b.year||'—')}</td>
+  <td data-label="АВТОР">${esc(b.author||'—')}${b.publisher?`<div class="r-book-note">${esc(b.publisher)}</div>`:''}</td><td data-label="ЖАНР">${b.genre?`<span class="r-genre">${esc(b.genre)}</span>`:'—'}</td><td data-label="ЖЫЛ">${esc(b.year||'—')}</td>
   <td data-label="БАРЛЫҒЫ">${total}</td><td data-label="ҚОЛЖЕТІМДІ"><span class="${available?'r-available':'r-unavailable'}">${available} дана</span></td>
   <td data-label="ӘРЕКЕТ"><button type="button" class="r-button primary" data-book="${id}" ${available?'':'disabled'}>Брондау</button></td></tr>`;
  }).join('')||'<tr><td colspan="7" class="r-empty">Кітап табылмады.</td></tr>';
