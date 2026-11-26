@@ -4095,6 +4095,33 @@ body.biblio-librarian #reader-app{display:none!important}
 #reader-app .r-panel-title{font-size:15px;font-weight:650;color:#202d43}
 #reader-app .r-panel-caption{color:#7b879a;font-size:11px;margin-top:7px}
 #reader-app .r-filter{padding:0 24px 16px;display:flex;align-items:center;gap:12px}
+/* Genre filtering stays inside the reader catalogue: no page navigation. */
+#reader-app .r-filter{flex-wrap:wrap}
+#reader-app .r-filter-trigger{display:inline-flex;align-items:center;justify-content:center;gap:9px;white-space:nowrap;min-height:38px;padding:0 14px;border:1px solid #dfe5ed;border-radius:6px;color:#315bc8;background:#fff;font-weight:650;font-size:12px;transition:background .15s,border-color .15s}
+#reader-app .r-filter-trigger:hover,#reader-app .r-filter-trigger[aria-expanded="true"]{border-color:#a9bee9;background:#f3f7ff}
+#reader-app .r-filter-trigger svg{width:16px;height:16px;flex:none}
+#reader-app .r-filter-chevron{transition:transform .2s}
+#reader-app .r-filter-trigger[aria-expanded="true"] .r-filter-chevron{transform:rotate(180deg)}
+#reader-app .r-filter-badge{min-width:18px;height:18px;border-radius:100px;display:inline-grid;place-items:center;padding:0 5px;background:#315bc8;color:#fff;font-size:10px}
+#reader-app .r-filter-badge[hidden],#reader-app .r-genre-panel[hidden]{display:none!important}
+#reader-app .r-genre-panel{border-top:1px solid #edf0f5;border-bottom:1px solid #edf0f5;background:#fafbfe;padding:18px 24px 20px;margin-bottom:16px}
+#reader-app .r-genre-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+#reader-app .r-genre-panel-title{font-size:13px;color:#243249;font-weight:700}
+#reader-app .r-genre-clear{font-size:11px;color:#315bc8;font-weight:600;background:none;border:0;padding:7px}
+#reader-app .r-genre-clear:hover{text-decoration:underline}
+#reader-genre-search{border:1px solid #dde5ef;border-radius:6px;width:100%;padding:11px 13px;font-size:12px;background:white;color:#243249;margin-bottom:14px;outline-color:#315bc8}
+#reader-app .r-genre-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-height:245px;overflow-y:auto;scrollbar-color:#cbd5e1 transparent}
+#reader-app .r-genre-option{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid #e5eaf2;border-radius:7px;padding:11px 12px;cursor:pointer;min-width:0;font-size:12px;color:#36455e}
+#reader-app .r-genre-option:has(input:checked){background:#eff4ff;border-color:#93b0ed;color:#234cab}
+#reader-app .r-genre-option:hover{border-color:#a7bde9}
+#reader-app .r-genre-option input{width:16px;height:16px;accent-color:#315bc8;flex:none;margin:0}
+#reader-app .r-genre-option-name{flex:1;overflow-wrap:anywhere;line-height:1.4}
+#reader-app .r-genre-option-count{color:#8997aa;font-size:11px;white-space:nowrap}
+#reader-app .r-genre-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:15px}
+#reader-app .r-genre-results-count{color:#77879b;font-size:11px}
+#reader-app .r-genre-apply{padding:10px 16px;border-radius:6px;border:1px solid #315bc8;background:#315bc8;color:white;font-size:12px;font-weight:650}
+#reader-app .r-genre-apply:hover{background:#244daa}
+#reader-app .r-genre-none{grid-column:1/-1;font-size:12px;color:#8491a4;padding:10px}
 #reader-search{height:38px;max-width:540px;width:100%;background:white;border:1px solid #dfe5ed;border-radius:5px;padding:0 12px;font-size:12px;color:#243249}
 #reader-app .r-table-scroll{overflow-x:auto}
 #reader-app .r-catalog-table{width:100%;min-width:710px;border-collapse:collapse;font-size:12px}
@@ -4137,7 +4164,7 @@ body.biblio-librarian #biblio-librarian-btn{display:block}
 #biblio-reader-switch{position:fixed;bottom:16px;left:245px;z-index:55;background:#315bc8;color:white;border:1px solid #315bc8;padding:11px 15px;border-radius:8px;box-shadow:0 5px 20px #1e293b25;cursor:pointer;font:600 12px Inter,Arial,sans-serif}
 body.biblio-reader #biblio-reader-switch{display:none!important}
 @media(max-width:1080px){#reader-app .r-sidebar{width:200px;padding:25px 12px}#reader-app .r-topbar,#reader-app .r-main{margin-left:200px}#reader-app .r-main{padding:28px 22px}#reader-app .r-topbar{padding:9px 22px}#reader-app .r-metric{padding-left:53px}#reader-app .r-metric-icon{left:14px}}
-@media(max-width:760px){#reader-app .r-sidebar{position:static;width:auto;padding:16px 18px 0;border-right:0;border-bottom:1px solid #e4e9ef}#reader-app .r-brand{padding:0;font-size:18px}#reader-app .r-side-label,#reader-app .r-school{display:none}#reader-app .r-nav{display:flex;overflow:auto;gap:6px;margin-top:16px}#reader-app .r-nav button{border-radius:5px 5px 0 0;white-space:nowrap;padding:10px}#reader-app .r-nav button.active:before{left:0;right:0;bottom:0;top:auto;height:2px;width:auto}#reader-app .r-topbar,#reader-app .r-main{margin-left:0}#reader-app .r-topbar{padding:9px 15px}#reader-app .r-main{padding:25px 16px}#reader-app .r-crumb{display:none}#reader-app .r-head-actions{width:100%;justify-content:flex-start}#reader-app .r-user{max-width:140px}#reader-app .r-heading{flex-direction:column}#reader-app h1{font-size:24px}#reader-app .r-metrics{padding:15px 0}#reader-app .r-metric{padding:0 8px;min-height:88px}#reader-app .r-metric-icon{display:none}#reader-app .r-metric-label{font-size:10px}#reader-app .r-metric-number{font-size:24px}#reader-app .r-metric-note{font-size:9px}#reader-app .r-panel-head{padding:17px 16px 15px}#reader-app .r-filter{padding:0 16px 13px}#reader-app .r-notice{padding:0 16px 12px}#biblio-reader-switch{left:14px;bottom:14px}}
+@media(max-width:760px){#reader-app .r-sidebar{position:static;width:auto;padding:16px 18px 0;border-right:0;border-bottom:1px solid #e4e9ef}#reader-app .r-brand{padding:0;font-size:18px}#reader-app .r-side-label,#reader-app .r-school{display:none}#reader-app .r-nav{display:flex;overflow:auto;gap:6px;margin-top:16px}#reader-app .r-nav button{border-radius:5px 5px 0 0;white-space:nowrap;padding:10px}#reader-app .r-nav button.active:before{left:0;right:0;bottom:0;top:auto;height:2px;width:auto}#reader-app .r-topbar,#reader-app .r-main{margin-left:0}#reader-app .r-topbar{padding:9px 15px}#reader-app .r-main{padding:25px 16px}#reader-app .r-crumb{display:none}#reader-app .r-head-actions{width:100%;justify-content:flex-start}#reader-app .r-user{max-width:140px}#reader-app .r-heading{flex-direction:column}#reader-app h1{font-size:24px}#reader-app .r-metrics{padding:15px 0}#reader-app .r-metric{padding:0 8px;min-height:88px}#reader-app .r-metric-icon{display:none}#reader-app .r-metric-label{font-size:10px}#reader-app .r-metric-number{font-size:24px}#reader-app .r-metric-note{font-size:9px}#reader-app .r-panel-head{padding:17px 16px 15px}#reader-app .r-filter{padding:0 16px 13px}#reader-app .r-genre-panel{padding:14px 16px 16px}#reader-app .r-genre-options{grid-template-columns:repeat(2,minmax(0,1fr))}#reader-app .r-notice{padding:0 16px 12px}#biblio-reader-switch{left:14px;bottom:14px}}
 @media(max-width:760px){
 #reader-app .r-catalog-table{min-width:0;display:block}
 #reader-app .r-catalog-table thead{display:none}
@@ -4150,7 +4177,7 @@ body.biblio-reader #biblio-reader-switch{display:none!important}
 #reader-app .r-catalog-table .r-empty{grid-column:1/-1}
 #reader-app .r-catalog-table tbody tr td:last-child button{width:100%}
 }
-@media(max-width:430px){#reader-app .r-head-actions{gap:5px}#reader-app .r-button{padding:8px}#reader-app .r-metric{padding:0 9px}#reader-app .r-metric-number{font-size:22px}}
+@media(max-width:430px){#reader-app .r-filter{gap:8px}#reader-search{max-width:none}#reader-app .r-filter-trigger{width:100%}#reader-app .r-genre-options{grid-template-columns:1fr}#reader-app .r-head-actions{gap:5px}#reader-app .r-button{padding:8px}#reader-app .r-metric{padding:0 9px}#reader-app .r-metric-number{font-size:22px}}
 </style>
 <section id="reader-app" aria-label="Кітапхана каталогы">
   <aside class="r-sidebar">
@@ -4183,7 +4210,20 @@ body.biblio-reader #biblio-reader-switch{display:none!important}
       </div>
       <section class="r-panel" aria-label="Көркем әдебиет тізімі">
         <div class="r-panel-head"><div class="r-panel-title">Көркем әдебиет тізімі</div><p class="r-panel-caption">Мектеп кітапханасының ортақ электрондық каталогы</p></div>
-        <div class="r-filter"><input id="reader-search" type="search" aria-label="Кітап іздеу" placeholder="Кітап атауы, авторы, ISBN бойынша іздеу..."></div>
+        <div class="r-filter">
+          <input id="reader-search" type="search" aria-label="Кітап іздеу" placeholder="Кітап атауы, авторы, ISBN бойынша іздеу...">
+          <button id="reader-genre-toggle" class="r-filter-trigger" type="button" aria-expanded="false" aria-controls="reader-genre-panel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>
+            Сүзгілер <span id="reader-genre-selected-count" class="r-filter-badge" hidden>0</span>
+            <svg class="r-filter-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+        <div id="reader-genre-panel" class="r-genre-panel" hidden>
+          <div class="r-genre-panel-head"><strong class="r-genre-panel-title">Жанр бойынша сүзу</strong><button type="button" class="r-genre-clear" id="reader-genre-clear">Тазарту</button></div>
+          <input id="reader-genre-search" type="search" placeholder="Жанрды іздеу..." aria-label="Жанрды іздеу">
+          <div id="reader-genre-options" class="r-genre-options" role="group" aria-label="Әдебиет жанрлары"></div>
+          <div class="r-genre-bottom"><span id="reader-genre-results-count" class="r-genre-results-count" aria-live="polite"></span><button type="button" class="r-genre-apply" id="reader-genre-apply">Кітаптарды көрсету</button></div>
+        </div>
         <p id="reader-notice" class="r-notice" role="status">Бұлттық каталог жүктелуде…</p>
         <div class="r-table-scroll"><table class="r-catalog-table"><thead><tr><th>КІТАП АТАУЫ</th><th>АВТОР</th><th>ЖАНР</th><th>ЖЫЛ</th><th>БАРЛЫҒЫ</th><th>ҚОЛЖЕТІМДІ</th><th>ӘРЕКЕТ</th></tr></thead><tbody id="reader-books"></tbody></table></div>
       </section>
@@ -4434,6 +4474,39 @@ const SCHOOL='tolegen-aibergenuly-school-19';
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let client=null,mode='guest',user=null,books=[],year='',selected=null,requestBusy=false,canManage=false,page='catalog',myCount=0,fetchSeq=0;
+// Genres are kept as a presentation filter, never changing books in Supabase.
+const selectedGenres=new Set();
+const GENRE_LABELS=Object.freeze({'1':'Роман','2':'Хикаят','3':'Әңгімелер','4':'Поэзия','5':'Драматургия','6':'Ертегілер','7':'Фантастика','8':'Детектив','9':'Тарихи әдебиет','10':'Балалар әдебиеті','11':'Классикалық әдебиет','12':'Жанр көрсетілмеген'});
+const genreName=value=>{const s=String(value??'').trim();return GENRE_LABELS[s]||s||'Жанр көрсетілмеген';};
+const matchingBooks=()=>{
+ const q=clean($('reader-search').value).toLocaleLowerCase();
+ return books.filter(b=>(!selectedGenres.size||selectedGenres.has(genreName(b.genre))) && (String(b.subject||'')+' '+String(b.author||'')+' '+String(b.isbn||'')).toLocaleLowerCase().includes(q));
+};
+function updateGenreCount(){
+ const n=selectedGenres.size,badge=$('reader-genre-selected-count');
+ badge.textContent=n;badge.hidden=n===0;
+ $('reader-genre-toggle').setAttribute('aria-label',n?'Сүзгілер, '+n+' жанр таңдалды':'Сүзгілер');
+ $('reader-genre-results-count').textContent=matchingBooks().length+' кітап табылды';
+}
+function renderGenreOptions(){
+ const counts=new Map();
+ for(const b of books){const g=genreName(b.genre);counts.set(g,(counts.get(g)||0)+1);}
+ const available=new Set(counts.keys());
+ for(const g of [...selectedGenres])if(!available.has(g))selectedGenres.delete(g);
+ const query=clean($('reader-genre-search').value).toLocaleLowerCase();
+ const entries=[...counts].sort((a,b)=>a[0].localeCompare(b[0],'kk-KZ')).filter(([g])=>g.toLocaleLowerCase().includes(query));
+ $('reader-genre-options').innerHTML=entries.map(([g,n])=>`<label class="r-genre-option"><input type="checkbox" value="${esc(g)}" ${selectedGenres.has(g)?'checked':''}><span class="r-genre-option-name">${esc(g)}</span><span class="r-genre-option-count">${n}</span></label>`).join('')||'<div class="r-genre-none">Жанр табылмады.</div>';
+ updateGenreCount();
+}
+function toggleGenrePanel(force){
+ const panel=$('reader-genre-panel');
+ const open=typeof force==='boolean'?force:panel.hidden;
+ panel.hidden=!open;
+ $('reader-genre-toggle').setAttribute('aria-expanded',String(open));
+ if(open){renderGenreOptions();$('reader-genre-search').focus();}
+ else $('reader-genre-toggle').focus();
+}
+
 const tell=(s,error=false)=>{$('reader-notice').textContent=s;$('reader-notice').dataset.error=String(error)};
 const modal=(title,html)=>{$('biblio-dialog-title').textContent=title;$('biblio-dialog-content').innerHTML=html;$('biblio-dialog-notice').textContent='';$('biblio-modal').classList.add('open');};
 const close=()=>$('biblio-modal').classList.remove('open');
@@ -4480,16 +4553,16 @@ async function catalog(){
   const {data,error}=await client.rpc('biblio_public_catalog',{p_school_id:SCHOOL});if(error)throw error;
   if(seq!==fetchSeq)return;
   year=data?.academic_year||'';books=Array.isArray(data?.books)?data.books:[];
-  render();metrics();tell(year?year.replace('-', '/')+' оқу жылы · '+books.length+' кітап атауы':'Каталог әзірше бос.');
+  renderGenreOptions();render();metrics();tell(year?year.replace('-', '/')+' оқу жылы · '+books.length+' кітап атауы':'Каталог әзірше бос.');
  }catch(e){if(seq===fetchSeq)tell('Каталог жүктелмеді: '+e.message+'\nSupabase SQL орнатуын тексеріңіз.',true);}
 }
 function render(){
- const q=clean($('reader-search').value).toLocaleLowerCase();
- const shown=books.filter(b=>(String(b.subject||'')+' '+String(b.author||'')+' '+String(b.isbn||'')).toLocaleLowerCase().includes(q));
+ const shown=matchingBooks();
+ updateGenreCount();
  $('reader-books').innerHTML=shown.map(b=>{
   const total=Number(b.total)||0,available=Math.max(0,Number(b.available)||0),id=Number(b.id);
   return `<tr><td data-label="КІТАП АТАУЫ"><div class="r-book-title">${esc(b.subject)}</div>${b.isbn?`<div class="r-book-note">ISBN: ${esc(b.isbn)}</div>`:''}</td>
-  <td data-label="АВТОР">${esc(b.author||'—')}${b.publisher?`<div class="r-book-note">${esc(b.publisher)}</div>`:''}</td><td data-label="ЖАНР">${b.genre?`<span class="r-genre">${esc(b.genre)}</span>`:'—'}</td><td data-label="ЖЫЛ">${esc(b.year||'—')}</td>
+  <td data-label="АВТОР">${esc(b.author||'—')}${b.publisher?`<div class="r-book-note">${esc(b.publisher)}</div>`:''}</td><td data-label="ЖАНР">${b.genre?`<span class="r-genre">${esc(genreName(b.genre))}</span>`:'—'}</td><td data-label="ЖЫЛ">${esc(b.year||'—')}</td>
   <td data-label="БАРЛЫҒЫ">${total}</td><td data-label="ҚОЛЖЕТІМДІ"><span class="${available?'r-available':'r-unavailable'}">${available} дана</span></td>
   <td data-label="ӘРЕКЕТ"><button type="button" class="r-button primary" data-book="${id}" ${available?'':'disabled'}>Брондау</button></td></tr>`;
  }).join('')||'<tr><td colspan="7" class="r-empty">Кітап табылмады.</td></tr>';
@@ -4614,10 +4687,21 @@ $('reader-account').onclick=()=>showAuth();
 $('reader-settings').onclick=()=>$('cloud-toggle').click();
 $('reader-logout').onclick=()=>window.BiblioCloud.readerSignOut();
 $('reader-search').oninput=render;
+$('reader-genre-toggle').onclick=()=>toggleGenrePanel();
+$('reader-genre-search').oninput=renderGenreOptions;
+$('reader-genre-options').onchange=e=>{
+ if(e.target instanceof HTMLInputElement&&e.target.type==='checkbox'){
+  if(e.target.checked)selectedGenres.add(e.target.value);
+  else selectedGenres.delete(e.target.value);
+  render();
+ }
+};
+$('reader-genre-clear').onclick=()=>{selectedGenres.clear();$('reader-genre-search').value='';renderGenreOptions();render();};
+$('reader-genre-apply').onclick=()=>toggleGenrePanel(false);
 $('biblio-dialog-close').onclick=close;
 $('biblio-modal').addEventListener('click',e=>{if(e.target===$('biblio-modal'))close()});
 $('biblio-librarian-btn').onclick=librarianBookings;
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('biblio-modal').classList.contains('open'))close()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('biblio-modal').classList.contains('open'))close();else if(!$('reader-genre-panel').hidden)toggleGenrePanel(false);}});
 setInterval(()=>{if(client&&mode!=='librarian'&&document.visibilityState==='visible')catalog();},30000);
 window.ReaderUI={enter};
 })();
